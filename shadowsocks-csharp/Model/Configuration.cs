@@ -393,7 +393,7 @@ namespace Shadowsocks.Model
             localDnsServer = "";
 
             balanceAlgorithm = "LowException";
-            random = true;
+            random = false;
             sysProxyMode = (int)ProxyMode.Global;
             proxyRuleMode = (int)ProxyRuleMode.BypassLanAndChina;
 
