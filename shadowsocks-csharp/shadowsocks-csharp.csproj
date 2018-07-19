@@ -294,6 +294,7 @@
     <None Include="Data\privoxy.exe.gz" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ssr-win-4.0.xml" />
     <None Include="Data\proxy.pac.txt.gz" />
     <None Include="Properties\DataSources\Shadowsocks.View.ConfigForm.datasource" />
     <None Include="Resources\ss20.png" />

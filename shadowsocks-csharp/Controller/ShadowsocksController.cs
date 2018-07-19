@@ -510,13 +510,6 @@ namespace Shadowsocks.Controller
 
             UpdateSystemProxy();
             Util.Utils.ReleaseMemory();
-
-            Configuration config = GetCurrentConfiguration();
-            for (int id = 0; id < config.configs.Count; ++id)
-            {
-                Server server = config.configs[id];
-                server.GetConnections().CloseAll();
-            }
         }
 
 

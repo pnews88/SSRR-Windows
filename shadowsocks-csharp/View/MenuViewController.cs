@@ -147,6 +147,16 @@ namespace Shadowsocks.View
             }
             Configuration config = controller.GetCurrentConfiguration();
             bool enabled = config.sysProxyMode != (int)ProxyMode.NoModify && config.sysProxyMode != (int)ProxyMode.Direct;
+            string server;
+            if (config.random)
+            {
+                server = config.balanceAlgorithm;
+            }
+            else
+            {
+                int server_current = config.index;
+                server = config.configs[server_current].remarks;
+            }
             bool global = config.sysProxyMode == (int)ProxyMode.Global;
             bool random = config.random;
 
@@ -211,6 +221,8 @@ namespace Shadowsocks.View
             string text = (enabled ?
                     (global ? I18N.GetString("Global") : I18N.GetString("PAC")) :
                     I18N.GetString("Disable system proxy"))
+                    + "\r\n"
+                    + server
                     + "\r\n"
                     + String.Format(I18N.GetString("Running: Port {0}"), config.localPort)  // this feedback is very important because they need to know Shadowsocks is running
                     ;
@@ -292,7 +304,7 @@ namespace Shadowsocks.View
                     CreateMenuItem("Reset password...", new EventHandler(this.ResetPasswordItem_Click)),
                     new MenuItem("-"),
                     CreateMenuItem("About...", new EventHandler(this.AboutItem_Click)),
-                    CreateMenuItem("Donate...", new EventHandler(this.DonateItem_Click)),
+                    //CreateMenuItem("Donate...", new EventHandler(this.DonateItem_Click)),
                 }),
                 CreateMenuItem("Quit", new EventHandler(this.Quit_Click))
             });
@@ -1000,7 +1012,7 @@ namespace Shadowsocks.View
 
         private void AboutItem_Click(object sender, EventArgs e)
         {
-            Process.Start("https://breakwa11.github.io");
+            Process.Start("https://github.com/SoDa-GitHub/shadowsocksrr-csharp");
         }
 
         private void DonateItem_Click(object sender, EventArgs e)
@@ -1152,6 +1164,12 @@ namespace Shadowsocks.View
         {
             MenuItem item = (MenuItem)sender;
             controller.SelectServerIndex((int)item.Tag);
+            Configuration config = controller.GetCurrentConfiguration();
+            for (int id = 0; id < config.configs.Count; ++id)
+            {
+                Server server = config.configs[id];
+                server.GetConnections().CloseAll();
+            }
         }
 
         private void CheckUpdate_Click(object sender, EventArgs e)
