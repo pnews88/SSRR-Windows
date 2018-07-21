@@ -295,7 +295,7 @@ namespace Shadowsocks.View
                 CreateMenuGroup("Servers Subscribe", new MenuItem[] {
                     CreateMenuItem("Subscribe setting...", new EventHandler(this.SubscribeSetting_Click)),
                     CreateMenuItem("Update subscribe SSR node", new EventHandler(this.CheckNodeUpdate_Click)),
-                    CreateMenuItem("Update subscribe SSR node(bypass proxy)", new EventHandler(this.CheckNodeUpdateBypassProxy_Click)),
+                    CreateMenuItem("Update subscribe SSR node(use proxy)", new EventHandler(this.CheckNodeUpdateUseProxy_Click)),
                 }),
                 SelectRandomItem = CreateMenuItem("Load balance", new EventHandler(this.SelectRandomItem_Click)),
                 CreateMenuItem("Global settings...", new EventHandler(this.Setting_Click)),
@@ -1199,12 +1199,12 @@ namespace Shadowsocks.View
             updateChecker.CheckUpdate(controller.GetCurrentConfiguration());
         }
 
-        private void CheckNodeUpdate_Click(object sender, EventArgs e)
+        private void CheckNodeUpdateUseProxy_Click(object sender, EventArgs e)
         {
             updateSubscribeManager.CreateTask(controller.GetCurrentConfiguration(), updateFreeNodeChecker, -1, true, true);
         }
 
-        private void CheckNodeUpdateBypassProxy_Click(object sender, EventArgs e)
+        private void CheckNodeUpdate_Click(object sender, EventArgs e)
         {
             updateSubscribeManager.CreateTask(controller.GetCurrentConfiguration(), updateFreeNodeChecker, -1, false, true);
         }
