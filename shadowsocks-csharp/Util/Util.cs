@@ -11,9 +11,10 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using OpenDNS;
 using Shadowsocks.Controller;
-using Shadowsocks.Encryption;
+using Shadowsocks;
 using Shadowsocks.Model;
 
 namespace Shadowsocks.Util
@@ -488,6 +489,27 @@ namespace Shadowsocks.Util
                 dpi = (int)graphics.DpiX;
             }
             return (dpi * 4 + 48) / 96;
+        }
+
+        public static bool is360Exist()
+        {
+            List<Process> process = new List<Process>(Process.GetProcessesByName("ZhuDongFangYu"));
+            process.AddRange(Process.GetProcessesByName("360Safe"));
+            string registry_path_360Safe = (IntPtr.Size == 4 ? @"Software\Microsoft\Windows\CurrentVersion\App Paths\360safe.exe" : @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\App Paths\360safe.exe");
+            string registry_path_360Se6 = (IntPtr.Size == 4 ? @"Software\Microsoft\Windows\CurrentVersion\App Paths\360se6.exe" : @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\App Paths\360se6.exe");
+            RegistryKey registry_360Safe = Registry.LocalMachine.OpenSubKey(registry_path_360Safe);
+            RegistryKey registry_360Se6 = Registry.LocalMachine.OpenSubKey(registry_path_360Se6);
+            if (
+                process.Count != 0 ||
+                registry_360Safe != null||
+                registry_360Se6 != null 
+                )
+            {
+                //因为只有国行小白才会看到本消息，所以用中文
+                MessageBox.Show(I18N.GetString("SSRR无法运行于安装有360的电脑，告辞！"));
+                return true;
+            }
+            return false;
         }
 
 #if !_CONSOLE

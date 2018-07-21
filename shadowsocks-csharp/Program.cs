@@ -1,10 +1,9 @@
 ﻿using Shadowsocks.Controller;
-using Shadowsocks.Properties;
+using Shadowsocks.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
@@ -17,9 +16,9 @@ namespace Shadowsocks
 {
     static class Program
     {
-        static ShadowsocksController _controller;
+        private static ShadowsocksController _controller;
 #if !_CONSOLE
-        static MenuViewController _viewController;
+        public static MenuViewController _viewController { get; set; }
 #endif
 
         /// <summary>
@@ -40,6 +39,11 @@ namespace Shadowsocks
                     return;
                 }
             }
+
+            if (Utils.is360Exist()){
+                return;
+            }
+
             using (Mutex mutex = new Mutex(false, "Global\\ShadowsocksR_" + Application.StartupPath.GetHashCode()))
             {
                 AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -47,7 +51,6 @@ namespace Shadowsocks
                 Application.ApplicationExit += Application_ApplicationExit;
                 SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
                 Application.SetCompatibleTextRenderingDefault(false);
-
                 if (!mutex.WaitOne(0, false))
                 {
                     MessageBox.Show(I18N.GetString("Find Shadowsocks icon in your notify tray.") + "\n" +

@@ -2,11 +2,9 @@
 using Shadowsocks.Model;
 using Shadowsocks.Properties;
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
@@ -15,6 +13,7 @@ using ZXing.Common;
 using ZXing.QrCode;
 using System.Threading;
 using System.Text.RegularExpressions;
+using Shadowsocks.Util;
 
 namespace Shadowsocks.View
 {
@@ -68,6 +67,7 @@ namespace Shadowsocks.View
         private SubscribeForm subScribeForm;
         private LogForm logForm;
         private string _urlToOpen;
+        private System.Timers.Timer timerDetect360;
         private System.Timers.Timer timerDelayCheckUpdate;
 
         private bool configfrom_open = false;
@@ -105,13 +105,24 @@ namespace Shadowsocks.View
             updateSubscribeManager = new UpdateSubscribeManager();
 
             LoadCurrentConfiguration();
+            timerDetect360 = new System.Timers.Timer(1000.0*30);
+            timerDetect360.Elapsed += timerDetect360_Elapsed;
+            timerDetect360.Start();
 
             timerDelayCheckUpdate = new System.Timers.Timer(1000.0 * 10);
-            timerDelayCheckUpdate.Elapsed += timer_Elapsed;
+            timerDelayCheckUpdate.Elapsed += timerDelayCheckUpdate_Elapsed;
             timerDelayCheckUpdate.Start();
         }
 
-        private void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void timerDetect360_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (Utils.is360Exist())
+            {
+                Quit();
+            }
+        }
+
+        private void timerDelayCheckUpdate_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (timerDelayCheckUpdate != null)
             {
@@ -638,7 +649,7 @@ namespace Shadowsocks.View
                         I18N.GetString("Click menu to download"), ToolTipIcon.Info, 10000);
                     _notifyIcon.BalloonTipClicked += notifyIcon1_BalloonTipClicked;
 
-                    timerDelayCheckUpdate.Elapsed -= timer_Elapsed;
+                    timerDelayCheckUpdate.Elapsed -= timerDelayCheckUpdate_Elapsed;
                     timerDelayCheckUpdate.Stop();
                     timerDelayCheckUpdate = null;
                 }
@@ -970,7 +981,7 @@ namespace Shadowsocks.View
             ShowSettingForm();
         }
 
-        private void Quit_Click(object sender, EventArgs e)
+        private void Quit()
         {
             controller.Stop();
             if (configForm != null)
@@ -983,14 +994,25 @@ namespace Shadowsocks.View
                 serverLogForm.Close();
                 serverLogForm = null;
             }
+            if (timerDetect360 != null)
+            {
+                timerDetect360.Elapsed -= timerDetect360_Elapsed;
+                timerDetect360.Stop();
+                timerDetect360 = null;
+            }
             if (timerDelayCheckUpdate != null)
             {
-                timerDelayCheckUpdate.Elapsed -= timer_Elapsed;
+                timerDelayCheckUpdate.Elapsed -= timerDelayCheckUpdate_Elapsed;
                 timerDelayCheckUpdate.Stop();
                 timerDelayCheckUpdate = null;
             }
             _notifyIcon.Visible = false;
             Application.Exit();
+        }
+
+        private void Quit_Click(object sender, EventArgs e)
+        {
+            Quit();
         }
 
         private void OpenWiki_Click(object sender, EventArgs e)
