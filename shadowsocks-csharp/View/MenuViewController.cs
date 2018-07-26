@@ -116,7 +116,7 @@ namespace Shadowsocks.View
 
         private void timerDetect360_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (Utils.is360Exist())
+            if (Utils.isVirusExist())
             {
                 Quit();
             }

@@ -40,7 +40,7 @@ namespace Shadowsocks
                 }
             }
 
-            if (Utils.is360Exist()){
+            if (Utils.isVirusExist()){
                 return;
             }
 
