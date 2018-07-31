@@ -8,7 +8,7 @@ ShadowsocksR for Windows
 
 .Net 4.5+.
 
-No 360.
+No 360/2345, etc.
 
 
 ### Usage
