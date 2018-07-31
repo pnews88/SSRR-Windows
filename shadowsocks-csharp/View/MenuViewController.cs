@@ -1037,8 +1037,7 @@ namespace Shadowsocks.View
 
         private void DonateItem_Click(object sender, EventArgs e)
         {
-
-            ShowBalloonTip(I18N.GetString("Donate"), I18N.GetString("Please contract to breakwa11 to get more infomation"), ToolTipIcon.Info, 10000);
+            Process.Start("https://github.com/SoDa-GitHub/shadowsocksrr-csharp/blob/master/donate.jpg?raw=true");
         }
 
         [DllImport("user32.dll")]
