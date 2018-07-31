@@ -21,10 +21,8 @@ namespace Shadowsocks.Controller
 
         public const string Name = "ShadowsocksR";
         public const string Copyright = "Copyright © BreakWa11 2017. Fork from Shadowsocks by clowwindy";
-        public const string Version = "5.0.4";
-#if !_DOTNET_4_0
-        public const string NetVer = "2.0";
-#elif !_CONSOLE
+        public const string Version = "5.0.3";
+#if !_CONSOLE
         public const string NetVer = "4.0";
 #else
         public const string NetVer = "";
@@ -65,6 +63,7 @@ namespace Shadowsocks.Controller
                     http.Proxy = null;
                 }
                 //UseProxy = !UseProxy;
+
                 http.DownloadStringCompleted += http_DownloadStringCompleted;
                 http.DownloadStringAsync(new Uri(UpdateURL + "?rnd=" + Util.Utils.RandUInt32().ToString()));
             }

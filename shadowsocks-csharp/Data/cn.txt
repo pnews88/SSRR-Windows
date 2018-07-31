@@ -17,7 +17,9 @@ User custom=用户自定义
 Disable bypass=全局
 Servers=服务器
 Edit servers...=编辑服务器...
-Import servers from file...=从文件导入服务器...
+Import servers from file...=从文件导入...
+Import from clipboard SSR links...=从剪贴板SSR链接导入...
+Import from screen QRCode...=从屏幕二维码导入...
 Servers Subscribe=服务器订阅
 Subscribe setting...=SSR服务器订阅设置...
 Update subscribe SSR node=更新SSR服务器订阅
@@ -37,8 +39,6 @@ Copy PAC URL=复制 PAC URL
 Edit local PAC file...=编辑本地 PAC 文件...
 Edit user rule for GFWList...=编辑 GFWList 的用户规则...
 Show QRCode...=显示二维码...
-Scan QRCode from screen...=二维码扫描...
-Import SSR links from clipboard...=剪贴板批量导入ssr://链接...
 Port settings...=端口设置...
 Server statistic...=服务器连接统计...
 Disconnect current=断开当前所有连接
@@ -182,6 +182,10 @@ Parse gui-config.json error, maybe require password to decrypt=解析 gui-config
 # ResetPassword Form
 
 ResetPassword=重置密码
+This password is use to encrypt local SSR data.=本密码用于加密SSR本地数据
+Old Password=旧密码
+New Password=新密码
+Confirm Password=确认密码
 
 # PortSettingsForm Form
 
@@ -195,9 +199,9 @@ Local Port=本地端口
 Port Forward=端口转发
 Force Proxy=强制代理
 Proxy With Rule=规则代理
-#Enable=
-#Remarks=
-#OK=
+#Enable=启用
+#Remarks=备注
+#OK=确定
 #Cancel=
 #&Add=
 #&Delete=

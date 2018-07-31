@@ -1,13 +1,12 @@
 ﻿using Shadowsocks.Controller;
 using Shadowsocks.Util;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using Shadowsocks.Model;
+using System.Net;
 #if !_CONSOLE
 using Shadowsocks.View;
 #endif
@@ -40,7 +39,8 @@ namespace Shadowsocks
                 }
             }
 
-            if (Utils.isVirusExist()){
+            if (Utils.isVirusExist())
+            {
                 return;
             }
 
@@ -87,8 +87,8 @@ namespace Shadowsocks
 
 #if _DOTNET_4_0
                 // Enable Modern TLS when .NET 4.5+ installed.
-                if (Util.EnvCheck.CheckDotNet45())
-                    ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+                if (EnvCheck.CheckDotNet45())
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 #endif
 #if !_CONSOLE
                 _viewController = new MenuViewController(_controller);

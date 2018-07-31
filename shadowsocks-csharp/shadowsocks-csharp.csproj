@@ -43,7 +43,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\2.0\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;PROTOCOL_STATISTICS</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -54,7 +54,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\2.0\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;PROTOCOL_STATISTICS</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
