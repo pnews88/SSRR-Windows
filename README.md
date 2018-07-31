@@ -35,4 +35,4 @@ Copyright © Akkariiin 2018. Forked from ShadowsocksR by BreakWa11
 
 ### Donate
 
-![image](https://raw.githubusercontent.com/SoDa-GitHub/shadowsocksrr-csharp/master/donate.jpg)
+<img width="420" src="https://raw.githubusercontent.com/SoDa-GitHub/shadowsocksrr-csharp/master/donate.jpg"/>
