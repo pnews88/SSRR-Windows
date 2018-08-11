@@ -31,7 +31,7 @@ namespace Shadowsocks
             {
                 if (arg == "--setautorun")
                 {
-                    if (!Controller.AutoStartup.Switch())
+                    if (!AutoStartup.Switch())
                     {
                         Environment.ExitCode = 1;
                     }

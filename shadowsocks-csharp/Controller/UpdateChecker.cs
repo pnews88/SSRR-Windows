@@ -1,10 +1,7 @@
 ﻿using Shadowsocks.Model;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Windows.Forms;
@@ -21,7 +18,7 @@ namespace Shadowsocks.Controller
 
         public const string Name = "ShadowsocksR";
         public const string Copyright = "Copyright © BreakWa11 2017. Fork from Shadowsocks by clowwindy";
-        public const string Version = "5.0.5";
+        public const string Version = "5.0.7";
 #if !_CONSOLE
         public const string NetVer = "4.0";
 #else
@@ -194,10 +191,7 @@ namespace Shadowsocks.Controller
                 SortVersions(versions);
                 LatestVersionURL = versions[versions.Count - 1];
                 LatestVersionNumber = ParseVersionFromURL(LatestVersionURL);
-                if (NewVersionFound != null)
-                {
-                    NewVersionFound(this, new EventArgs());
-                }
+                NewVersionFound?.Invoke(this, new EventArgs());
             }
             catch (Exception ex)
             {
@@ -206,10 +200,7 @@ namespace Shadowsocks.Controller
                     Logging.Debug(e.Error.ToString());
                 }
                 Logging.Debug(ex.ToString());
-                if (NewVersionFound != null)
-                {
-                    NewVersionFound(this, new EventArgs());
-                }
+                NewVersionFound?.Invoke(this, new EventArgs());
                 return;
             }
         }

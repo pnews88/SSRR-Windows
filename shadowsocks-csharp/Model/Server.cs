@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.IO;
 using System.Diagnostics;
 #if !_CONSOLE
 using SimpleJson;
@@ -10,7 +9,7 @@ using Shadowsocks.Controller;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Sockets;
-using Shadowsocks.Encryption;
+using System.Linq;
 
 namespace Shadowsocks.Model
 {
@@ -20,7 +19,7 @@ namespace Shadowsocks.Model
         public DateTime updateTime;
         public string host;
         public bool force_expired;
-         public bool isExpired(string host)
+        public bool isExpired(string host)
         {
             if (updateTime == null) return true;
             if (this.host != host) return true;
@@ -119,6 +118,13 @@ namespace Shadowsocks.Model
         public string group;
         public bool enable;
         public bool udp_over_tcp;
+
+        public int latency;
+
+        public static int LATENCY_ERROR = -2;
+        public static int LATENCY_PENDING = -1;
+        public static int LATENCY_TESTING = 0;
+
 
         private object protocoldata;
         private object obfsdata;
@@ -296,6 +302,7 @@ namespace Shadowsocks.Model
             group = "FreeSSR-public";
             udp_over_tcp = false;
             enable = true;
+            latency = LATENCY_PENDING;
             byte[] id = new byte[16];
             Util.Utils.RandBytes(id, id.Length);
             this.id = BitConverter.ToString(id).Replace("-", "");
@@ -505,6 +512,44 @@ namespace Shadowsocks.Model
         public void setProtocolData(object data)
         {
             this.protocoldata = data;
+        }
+
+        public void tcpingLatency()
+        {
+            var latencies = new List<double>();
+            var sock = new TcpClient();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            try
+            {
+                Dns.GetHostAddresses(server);
+            }
+            catch (Exception)
+            {
+                latency = LATENCY_ERROR;
+                return;
+            }
+
+            var result = sock.BeginConnect(server, server_port, null, null);
+            if (result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(2)))
+            {
+                stopwatch.Stop();
+                latencies.Add(stopwatch.Elapsed.TotalMilliseconds);
+                sock.EndConnect(result);
+            }
+            else
+            {
+                stopwatch.Stop();
+            }
+
+            if (latencies.Count != 0)
+            {
+                latency = (int)latencies.Average();
+            }
+            else
+            {
+                latency = LATENCY_ERROR;
+            }
         }
     }
 }

@@ -14,6 +14,9 @@ using ZXing.QrCode;
 using System.Threading;
 using System.Text.RegularExpressions;
 using Shadowsocks.Util;
+using System.Net.Sockets;
+using System.Net;
+using System.Linq;
 
 namespace Shadowsocks.View
 {
@@ -39,6 +42,8 @@ namespace Shadowsocks.View
         private UpdateChecker updateChecker;
         private UpdateFreeNode updateFreeNodeChecker;
         private UpdateSubscribeManager updateSubscribeManager;
+
+        private bool isBeingUsed = false;
 
         private NotifyIcon _notifyIcon;
         private ContextMenu contextMenu1;
@@ -67,8 +72,9 @@ namespace Shadowsocks.View
         private SubscribeForm subScribeForm;
         private LogForm logForm;
         private string _urlToOpen;
-        private System.Timers.Timer timerDetect360;
+        private System.Timers.Timer timerDetectVirus;
         private System.Timers.Timer timerDelayCheckUpdate;
+        private System.Timers.Timer timerUpdateLatency;
 
         private bool configfrom_open = false;
         private List<EventParams> eventList = new List<EventParams>();
@@ -105,16 +111,21 @@ namespace Shadowsocks.View
             updateSubscribeManager = new UpdateSubscribeManager();
 
             LoadCurrentConfiguration();
-            timerDetect360 = new System.Timers.Timer(1000.0 * 30);
-            timerDetect360.Elapsed += timerDetect360_Elapsed;
-            timerDetect360.Start();
+            timerDetectVirus = new System.Timers.Timer(1000.0 * 30);
+            timerDetectVirus.Elapsed += timerDetectVirus_Elapsed;
+            timerDetectVirus.Start();
 
+            //this interval will change
             timerDelayCheckUpdate = new System.Timers.Timer(1000.0 * 10);
             timerDelayCheckUpdate.Elapsed += timerDelayCheckUpdate_Elapsed;
             timerDelayCheckUpdate.Start();
+
+            timerUpdateLatency = new System.Timers.Timer(1000.0 * 3);
+            timerUpdateLatency.Elapsed += timerUpdateLatency_Elapsed;
+            timerUpdateLatency.Start();
         }
 
-        private void timerDetect360_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void timerDetectVirus_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (Utils.isVirusExist())
             {
@@ -144,6 +155,16 @@ namespace Shadowsocks.View
             }
         }
 
+        private void timerUpdateLatency_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            timerUpdateLatency.Interval = 1000.0 * 60;
+            Configuration configuration = _controller.GetCurrentConfiguration();
+            foreach (var server in configuration.configs)
+            {
+                server.tcpingLatency();
+            }
+            UpdateServersMenu();
+        }
         void controller_Errored(object sender, System.IO.ErrorEventArgs e)
         {
             MessageBox.Show(e.GetException().ToString(), String.Format(I18N.GetString("Shadowsocks Error: {0}"), e.GetException().Message));
@@ -659,12 +680,12 @@ namespace Shadowsocks.View
 
         void UpdateItem_Clicked(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(updateChecker.LatestVersionURL);
+            Process.Start(updateChecker.LatestVersionURL);
         }
 
         void notifyIcon1_BalloonTipClicked(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(updateChecker.LatestVersionURL);
+            Process.Start(updateChecker.LatestVersionURL);
             _notifyIcon.BalloonTipClicked -= notifyIcon1_BalloonTipClicked;
         }
 
@@ -717,7 +738,24 @@ namespace Shadowsocks.View
                 else
                     group_name = server.group;
 
-                MenuItem item = new MenuItem(server.FriendlyName());
+                string latency;
+                if (server.latency == Server.LATENCY_TESTING)
+                {
+                    latency = "[testing]";
+                }
+                else if (server.latency == Server.LATENCY_ERROR)
+                {
+                    latency = "[error]";
+                }
+                else if (server.latency == Server.LATENCY_PENDING)
+                {
+                    latency = "[pending]";
+                }
+                else
+                {
+                    latency = "[" + server.latency.ToString() + "ms]";
+                }
+                MenuItem item = new MenuItem(latency + " " + server.FriendlyName());
                 item.Tag = i;
                 item.Click += AServerItem_Click;
                 if (configuration.index == i)
@@ -900,7 +938,7 @@ namespace Shadowsocks.View
         {
             configForm = null;
             configfrom_open = false;
-            Util.Utils.ReleaseMemory();
+            Utils.ReleaseMemory();
             if (eventList.Count > 0)
             {
                 foreach (EventParams p in eventList)
@@ -914,7 +952,7 @@ namespace Shadowsocks.View
         void settingsForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             settingsForm = null;
-            Util.Utils.ReleaseMemory();
+            Utils.ReleaseMemory();
         }
 
         void serverLogForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -992,17 +1030,23 @@ namespace Shadowsocks.View
                 serverLogForm.Close();
                 serverLogForm = null;
             }
-            if (timerDetect360 != null)
+            if (timerDetectVirus != null)
             {
-                timerDetect360.Elapsed -= timerDetect360_Elapsed;
-                timerDetect360.Stop();
-                timerDetect360 = null;
+                timerDetectVirus.Elapsed -= timerDetectVirus_Elapsed;
+                timerDetectVirus.Stop();
+                timerDetectVirus = null;
             }
             if (timerDelayCheckUpdate != null)
             {
                 timerDelayCheckUpdate.Elapsed -= timerDelayCheckUpdate_Elapsed;
                 timerDelayCheckUpdate.Stop();
                 timerDelayCheckUpdate = null;
+            }
+            if (timerUpdateLatency != null)
+            {
+                timerUpdateLatency.Elapsed -= timerUpdateLatency_Elapsed;
+                timerUpdateLatency.Stop();
+                timerUpdateLatency = null;
             }
             _notifyIcon.Visible = false;
             Application.Exit();
