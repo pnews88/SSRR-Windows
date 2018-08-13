@@ -535,11 +535,19 @@ namespace Shadowsocks.Model
             {
                 stopwatch.Stop();
                 latencies.Add(stopwatch.Elapsed.TotalMilliseconds);
-                sock.EndConnect(result);
             }
             else
             {
                 stopwatch.Stop();
+            }
+
+            try
+            {
+                sock.EndConnect(result);
+            }
+            catch (Exception)
+            {
+
             }
 
             if (latencies.Count != 0)

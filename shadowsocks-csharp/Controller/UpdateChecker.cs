@@ -18,7 +18,7 @@ namespace Shadowsocks.Controller
 
         public const string Name = "ShadowsocksR";
         public const string Copyright = "Copyright © BreakWa11 2017. Fork from Shadowsocks by clowwindy";
-        public const string Version = "5.0.7";
+        public const string Version = "5.1.1";
 #if !_CONSOLE
         public const string NetVer = "4.0";
 #else
@@ -45,7 +45,7 @@ namespace Shadowsocks.Controller
                 http.Headers.Add("User-Agent",
                 String.IsNullOrEmpty(config.proxyUserAgent) ?
                 "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.3319.102 Safari/537.36"
-                : config.proxyUserAgent);
+                : config.proxyUserAgent);                
                 if (UseProxy)
                 {
                     WebProxy proxy = new WebProxy(IPAddress.Loopback.ToString(), config.localPort);
@@ -59,7 +59,6 @@ namespace Shadowsocks.Controller
                 {
                     http.Proxy = null;
                 }
-                //UseProxy = !UseProxy;
 
                 http.DownloadStringCompleted += http_DownloadStringCompleted;
                 http.DownloadStringAsync(new Uri(UpdateURL + "?rnd=" + Util.Utils.RandUInt32().ToString()));
