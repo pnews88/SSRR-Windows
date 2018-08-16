@@ -543,7 +543,7 @@ namespace Shadowsocks.Model
 
             try
             {
-                sock.EndConnect(result);
+                sock.Close();
             }
             catch (Exception)
             {

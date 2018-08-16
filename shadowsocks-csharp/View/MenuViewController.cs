@@ -158,12 +158,19 @@ namespace Shadowsocks.View
         private void timerUpdateLatency_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             timerUpdateLatency.Interval = 1000.0 * 60;
+            timerUpdateLatency.Stop();
             Configuration configuration = _controller.GetCurrentConfiguration();
-            foreach (var server in configuration.configs)
+            for (int i = 0; i < configuration.configs.Count; i++)
             {
+                var server = configuration.configs[i];
                 server.tcpingLatency();
+                if (i % 10 == 0)
+                {
+                    UpdateServersMenu();
+                }
             }
             UpdateServersMenu();
+            timerUpdateLatency.Start();
         }
         void controller_Errored(object sender, System.IO.ErrorEventArgs e)
         {
@@ -637,7 +644,7 @@ namespace Shadowsocks.View
             {
                 if (updateFreeNodeChecker.noitify)
                     ShowBalloonTip(I18N.GetString("Success"),
-                        String.Format(I18N.GetString("Update subscribe {0} success"), lastGroup), ToolTipIcon.Info, 10000);
+                        string.Format(I18N.GetString("Update subscribe {0} success"), lastGroup), ToolTipIcon.Info, 10000);
             }
             else
             {
