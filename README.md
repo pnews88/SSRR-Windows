@@ -3,13 +3,13 @@ ShadowsocksR for Windows
 
 ### Link 链接
 
-This project will not add new functions. Only BUG feedback will be accepted.
+This project will not add new functions. Only BUG feedback will be accepted
 
-本项目不再进行功能性更新，仅接受BUG反馈。
+本项目不再进行功能性更新，仅接受BUG反馈
 
-A new project named [SSD](https://github.com/CGDF-Github/SSD-Windows) will be focus.
+A new project named [SSD](https://github.com/CGDF-Github/SSD-Windows) will be focus
 
-一个名为[SSD](https://github.com/CGDF-Github/SSD-Windows)的新项目会成为工作重心。
+一个名为[SSD](https://github.com/CGDF-Github/SSD-Windows)的新项目会成为工作重心
 
 SSD incompatible with SSR/SSRR
 
