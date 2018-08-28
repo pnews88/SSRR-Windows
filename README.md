@@ -1,23 +1,39 @@
 ShadowsocksR for Windows
 =======================
 
-### Environment
+### Link 链接
 
-.Net 4.5+.
+This project will not add new functions. Only BUG feedback will be accepted.
 
-No \[360/2345/Baidu\], etc.
+本项目不再进行功能性更新，仅接受BUG反馈。
+
+A new project named [SSD](https://github.com/CGDF-Github/SSD-Windows) will be focus.
+
+一个名为[SSD](https://github.com/CGDF-Github/SSD-Windows)的新项目会成为工作重心。
+
+SSD incompatible with SSR/SSRR
+
+SSD不兼容SSR/SSRR
+
+### Environment 环境
+
+.Net 4.5+
+
+无\[360/2345/百度\]全家桶
 
 \[360/2345/百度\]全家桶用户请使用[SSRR - Akkariiin](https://github.com/shadowsocksrr/shadowsocksr-csharp)
 
-### Usage
+### Usage 使用
 
-Please ask the merchant.
+Please ask others
 
-### Develop
+请问别人
 
-Visual Studio 2017 is recommended.
+### Develop 开发
 
-### License
+Visual Studio 2017 is recommended
+
+### License 授权
 
 GPLv3
 
